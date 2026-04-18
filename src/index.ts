@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-interface Options<Key = any> extends CSSStyleSheetInit {
+interface Options<Key = unknown> extends CSSStyleSheetInit {
   rules?: readonly (readonly [Key, string])[] | null;
   onCreated?: (sheet: CSSStyleSheet) => void;
 }
 
-class StyleSheetMap<Key = any> extends Map {
+class StyleSheetMap<Key = unknown> extends Map<Key, CSSRule> {
   public styleSheet?: CSSStyleSheet;
   public onCreatedSheet?: (sheet: CSSStyleSheet) => void;
   private styleSheetInit?: CSSStyleSheetInit;
@@ -23,7 +23,7 @@ class StyleSheetMap<Key = any> extends Map {
     if (rules && rules.length > 0) {
       this.styleSheet = this.createSheet();
       for (let [k, v] of rules) {
-        const index = this.styleSheet.insertRule(v);
+        const index = this.styleSheet.insertRule(v, this.styleSheet.cssRules.length);
         const rule = this.styleSheet.cssRules[index];
         super.set(k, rule);
       }
@@ -32,21 +32,17 @@ class StyleSheetMap<Key = any> extends Map {
 
   // key to index
   private getIndex(key: Key): number {
-    let index = -1;
     const rule = super.get(key);
-    if (rule && this.styleSheet) {
-      const cssRules = this.styleSheet.cssRules;
-      for (let i = cssRules.length; i >= 0; i--) {
-        if (cssRules[i] === rule) {
-          index = i;
-          break;
-        }
-      }
+    if (!rule || !this.styleSheet) return -1;
+    const cssRules = this.styleSheet.cssRules;
+    for (let i = cssRules.length - 1; i >= 0; i--) {
+      if (cssRules[i] === rule) return i;
     }
-    return index;
+    return -1;
   }
 
-  public set(key: Key, value: string) {
+  // @ts-expect-error - intentionally override Map's set to accept CSS text
+  public set(key: Key, value: string): this {
     if (!this.styleSheet) {
       this.styleSheet = this.createSheet();
     }
@@ -54,8 +50,10 @@ class StyleSheetMap<Key = any> extends Map {
     let index = this.getIndex(key);
     if (index !== -1) {
       this.styleSheet.deleteRule(index);
+    } else {
+      index = this.styleSheet.cssRules.length;
     }
-    index = this.styleSheet.insertRule(value, index === -1 ? 0 : index);
+    index = this.styleSheet.insertRule(value, index);
     const rule = this.styleSheet.cssRules[index];
     return super.set(key, rule);
   }
@@ -68,10 +66,18 @@ class StyleSheetMap<Key = any> extends Map {
     return super.delete(key);
   }
 
+  public clear() {
+    if (this.styleSheet) {
+      while (this.styleSheet.cssRules.length > 0) {
+        this.styleSheet.deleteRule(0);
+      }
+    }
+    super.clear();
+  }
+
   public createSheet(init?: CSSStyleSheetInit) {
     if (this.styleSheet) {
       console.warn("StyleSheetMap already has a styleSheet");
-      this.onCreatedSheet?.(this.styleSheet);
       return this.styleSheet;
     }
     init = init || this.styleSheetInit;

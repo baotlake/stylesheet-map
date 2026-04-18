@@ -1,24 +1,24 @@
 # StyleSheetMap
 
-A StyleSheetMap instance is a Map-like object that allows adding, updating, and deleting CSS rules through key-value pairs. It provides a convenient way to manage and manipulate CSS stylesheets, simplifying the handling of dynamic styles.
+A Map-like wrapper around `CSSStyleSheet` for managing CSS rules by key. Add, update, and delete rules with key-value semantics — works with constructable stylesheets and `adoptedStyleSheets`.
 
 ## Installation
 
 ```shell
 # npm
-npm i style-sheet-map
+npm i stylesheet-map
 
 # yarn
-yarn add style-sheet-map
+yarn add stylesheet-map
 
 # pnpm
-pnpm add style-sheet-map
+pnpm add stylesheet-map
 ```
 
 ## Usage
 
 ```javascript
-import StyleSheetMap from "style-sheet-map";
+import StyleSheetMap from "stylesheet-map";
 
 // Create a new StyleSheetMap instance
 const styleMap = new StyleSheetMap({
