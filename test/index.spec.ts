@@ -72,25 +72,25 @@ describe("basic tests", () => {
 
     // Verify initial state
     expect(sheet.size).toBe(3);
-    expect(sheet.get("key1").cssText).toBe("body { background-color: red; }");
-    expect(sheet.get("key2").cssText).toBe("h1 { color: blue; }");
-    expect(sheet.get("key3").cssText).toBe("p { font-size: 16px; }");
+    expect(sheet.get("key1")?.cssText).toBe("body { background-color: red; }");
+    expect(sheet.get("key2")?.cssText).toBe("h1 { color: blue; }");
+    expect(sheet.get("key3")?.cssText).toBe("p { font-size: 16px; }");
 
     // Update rules for 'key1' multiple times
     sheet.set("key1", "body { background-color: green; }");
-    expect(sheet.get("key1").cssText).toBe("body { background-color: green; }");
+    expect(sheet.get("key1")?.cssText).toBe("body { background-color: green; }");
 
     sheet.set("key1", "body { background-color: blue; }");
-    expect(sheet.get("key1").cssText).toBe("body { background-color: blue; }");
+    expect(sheet.get("key1")?.cssText).toBe("body { background-color: blue; }");
 
     // Update rules for 'key2'
     sheet.set("key2", "h1 { color: red; }");
-    expect(sheet.get("key2").cssText).toBe("h1 { color: red; }");
+    expect(sheet.get("key2")?.cssText).toBe("h1 { color: red; }");
 
     // Verify deletion of 'key2'
     sheet.delete("key2");
     expect(sheet.size).toBe(2);
-    expect(sheet.get("key1").cssText).toBe("body { background-color: blue; }");
-    expect(sheet.get("key3").cssText).toBe("p { font-size: 16px; }");
+    expect(sheet.get("key1")?.cssText).toBe("body { background-color: blue; }");
+    expect(sheet.get("key3")?.cssText).toBe("p { font-size: 16px; }");
   });
 });
