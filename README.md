@@ -6,19 +6,19 @@ A Map-like wrapper around `CSSStyleSheet` for managing CSS rules by key. Add, up
 
 ```shell
 # npm
-npm i stylesheet-map
+npm i style-sheet-map
 
 # yarn
-yarn add stylesheet-map
+yarn add style-sheet-map
 
 # pnpm
-pnpm add stylesheet-map
+pnpm add style-sheet-map
 ```
 
 ## Usage
 
 ```javascript
-import StyleSheetMap from "stylesheet-map";
+import StyleSheetMap from "style-sheet-map";
 
 // Create a new StyleSheetMap instance
 const styleMap = new StyleSheetMap({
